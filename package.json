@@ -27,7 +27,7 @@
 	"homepage": "https://github.com/ChristopherHaws/node-iis-manager",
 	"scripts": {
 		"build": "tsc",
-		"test": "mocha --reporter spec"
+		"test": "npm run build && mocha --reporter spec"
 	},
 	"dependencies": {
 		"child-process-promise": "^2.2.0",
@@ -40,6 +40,7 @@
 		"gulp": "^3.9.1",
 		"typescript": "^2.1.5",
 		"mocha": "^3.2.0",
+		"mocha-typescript": "^1.0.18",
 		"should": "^11.2.0"
 	}
 }
