@@ -1,0 +1,39 @@
+{
+	"name": "iis-manager",
+	"version": "0.1.0",
+	"description": "Manage IIS 7+ with NodeJS.",
+	"license": "MIT",
+	"directories": {
+		"doc": "docs",
+		"lib": "src",
+		"example": "samples"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ChristopherHaws/node-iis-manager.git"
+	},
+	"keywords": [
+		"iis",
+		"internet",
+		"information",
+		"services"
+	],
+	"author": "Christopher Haws",
+	"bugs": {
+		"url": "https://github.com/ChristopherHaws/node-iis-manager/issues"
+	},
+	"homepage": "https://github.com/ChristopherHaws/node-iis-manager",
+	"scripts": {
+		"build": "node make.js build",
+		"test": "node make.js test"
+	},
+	"dependencies": {
+		"child-process-promise": "^2.2.0",
+		"xml2js": "^0.4.17"
+	},
+	"devDependencies": {
+		"@types/node": "^7.0.0",
+		"gulp": "^3.9.1",
+		"typescript": "^2.1.5"
+	}
+}
