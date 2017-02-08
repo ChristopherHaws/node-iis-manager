@@ -6,7 +6,8 @@
 	"directories": {
 		"doc": "docs",
 		"lib": "src",
-		"example": "samples"
+		"example": "samples",
+		"test": "test"
 	},
 	"repository": {
 		"type": "git",
