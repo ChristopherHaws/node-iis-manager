@@ -36,11 +36,10 @@
 	"devDependencies": {
 		"@types/node": "^7.0.0",
 		"@types/mocha": "^2.2.39",
-		"@types/should": "^8.1.30",
+		"@types/chai": "^3.4.34",
 		"gulp": "^3.9.1",
 		"typescript": "^2.1.5",
 		"mocha": "^3.2.0",
-		"mocha-typescript": "^1.0.18",
-		"should": "^11.2.0"
+		"chai": "^3.5.0"
 	}
 }

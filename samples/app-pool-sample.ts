@@ -1,8 +1,8 @@
-import { AppPools } from '../'
+import { appPool } from '../'
 
 class Program {
 	public static async Main() {
-		let results = await AppPools.list();
+		let results = await appPool.list();
 		console.log(results);
 	}
 }

@@ -2,6 +2,6 @@ import { AppPool } from './src/app-pool'
 import { App } from './src/app'
 import { Site } from './src/site'
 
-export var AppPools = new AppPool();
-export var Apps = new App();
-export var Sites = new Site();
+export var appPool = new AppPool();
+export var app = new App();
+export var site = new Site();

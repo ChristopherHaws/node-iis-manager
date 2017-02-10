@@ -1,14 +1,19 @@
 require('mocha');
-require('should');
-import { suite, test, slow, timeout, skip, only } from 'mocha-typescript';
-import { Sites } from '../'
+require('chai').should()
+import { site } from '../'
 
-describe('Sites', async () => {
-	let sites = await Sites.list();
+describe('site', () => {
+	describe('exists', () => {
+		it('returns false when a site does not exist', async () => {
+			let exists = await site.exists('ThisIsANonexistantWebsiteName');
 
-	it('should be equal to 5', () => {
-		sites.should.containEql({
-			name: 'Default Web Site'
-		})
+			exists.should.be.false;
+		});
+
+		it('returns true when a site does exist', async () => {
+			let exists = await site.exists('Default Web Site');
+
+			exists.should.be.true;
+		});
 	});
 });
