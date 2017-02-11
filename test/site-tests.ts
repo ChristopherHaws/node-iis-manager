@@ -1,19 +1,25 @@
 require('mocha');
 require('chai').should();
-import { sites } from '../';
+import { sites, SiteOptions } from '../';
 
 describe('site', () => {
-	describe('exists', () => {
-		it('returns false when a site does not exist', async () => {
-			let exists = await sites.exists('ThisIsANonexistantWebsiteName');
+	it('can be retrieved after being created', async () => {
+		let exists = await sites.exists('TestSite');
+		if (exists) {
+			await sites.remove('TestSite');
+		}
 
-			exists.should.be.false;
-		});
+		await sites.add({
+			name: 'TestSite',
+			protocol: 'http',
+			host: 'testsiteurl',
+			port: 12345,
+			path: 'C:\\inetpub\\wwwroot'
+		} as SiteOptions);
 
-		it('returns true when a site does exist', async () => {
-			let exists = await sites.exists('Default Web Site');
+		let site = await sites.get('TestSite');
 
-			exists.should.be.true;
-		});
+		site.name.should.equal('TestSite');
+		site.bindings.should.equal('http/*:12345:testsiteurl');
 	});
 });

@@ -9,11 +9,11 @@ export interface Site {
 
 export interface SiteOptions {
 	name: string;
+	path: string;
 	protocol: string;
 	host: string;
 	port: number;
 	bindings?: string;
-	path?: string;
 }
 
 export class SiteManager {
@@ -21,10 +21,11 @@ export class SiteManager {
 		let command = new AppCmd();
 
 		await command
-			.arg("add site")
-			.arg("/name:" + options.name)
-			.arg("/bindings", (options.bindings || `${options.protocol}://${options.host}:${options.port}`))
-			.argIf(!!options.path, '/physicalPath', options.path)
+			.arg('add')
+			.arg('site')
+			.arg('/name', options.name)
+			.arg('/bindings', (options.bindings || `${options.protocol}://${options.host}:${options.port}`))
+			.arg('/physicalPath', options.path)
 			.exec();
 	}
 
@@ -32,16 +33,24 @@ export class SiteManager {
 		let command = new AppCmd();
 
 		await command
-			.arg("delete")
-			.arg("site")
-			.arg("/site.name", name)
+			.arg('delete')
+			.arg('site')
+			.arg('/site.name', name)
 			.exec();
 	}
 
 	public async exists(name: string): Promise<boolean> {
+		try {
+			return !!await this.get(name);
+		} catch (err) {
+			return false;
+		}
+	}
+
+	public async get(name: string): Promise<Site> {
 		let sites = await this.list();
 
-		return sites.some(x => x.name === name);
+		return sites.find(x => x.name === name);
 	}
 
 	public async list(): Promise<Site[]> {
