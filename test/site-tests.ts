@@ -1,6 +1,6 @@
 require('mocha');
-require('chai').should()
-import { sites } from '../'
+require('chai').should();
+import { sites } from '../';
 
 describe('site', () => {
 	describe('exists', () => {

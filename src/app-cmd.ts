@@ -1,6 +1,6 @@
 import * as os from 'os';
 import { exec } from 'child-process-promise';
-import { XmlParser } from './util/xml-parser'
+import { XmlParser } from './util/xml-parser';
 
 export interface IAppCmdResult<T> {
 	value?: T;

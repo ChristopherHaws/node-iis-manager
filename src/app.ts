@@ -1,4 +1,4 @@
-import { AppCmd } from './app-cmd'
+import { AppCmd } from './app-cmd';
 
 export interface App {
 	path: string;

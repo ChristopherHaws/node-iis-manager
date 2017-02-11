@@ -1,4 +1,4 @@
-import { apps } from '../'
+import { apps } from '../';
 
 class Program {
 	public static async Main() {

@@ -1,4 +1,4 @@
-import { appPools } from '../'
+import { appPools } from '../';
 
 class Program {
 	public static async Main() {
