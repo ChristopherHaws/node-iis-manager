@@ -1,8 +1,7 @@
 require('mocha');
 require('chai').should();
-import * as uuid from 'uuid';
-import {IMock, Mock, It, Times} from 'moq.ts';
-import { sites, SiteOptions, CommandExecutor, CommandResponse } from '../';
+import { IMock, Mock, It, Times } from 'moq.ts';
+import { CommandExecutor, CommandResponse } from '../';
 import { AppCmd } from '../src/app-cmd';
 
 describe('AppCmd', () => {
@@ -54,8 +53,6 @@ describe('AppCmd', () => {
 
 		mockCommandExecutor.verify(x => x.execute('appcmd list app /site.name:"Default Web Site"'), Times.Once());
 	});
-
-
 
 	it('arg adds quotations to multi-word value argument', async () => {
 		let appCmd = new AppCmd(mockCommandExecutor.object, 'appcmd')
