@@ -4,5 +4,15 @@
 		"**/.DS_Store": true,
 		"**/node_modules": true,
 		"**/*.js": { "when": "$(basename).ts" }
-	}
+	},
+
+	//-------- Mocha options --------
+	// Mocha: Options to run Mocha
+	"mocha.options": {},
+
+	// Mocha: Glob to search for test files
+	"mocha.files.glob": "dist/test/**/*.js",
+
+	// Mocha: Environment variables to run your tests
+	"mocha.env": {}
 }
