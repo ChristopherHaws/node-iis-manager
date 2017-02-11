@@ -2,8 +2,7 @@ import { appPool } from '../'
 
 class Program {
 	public static async Main() {
-		let results = await appPool.list();
-		console.log(results);
+		await appPool.stop('DefaultAppPool');
 	}
 }
 

@@ -4,6 +4,8 @@ import { XmlParser } from './util/xml-parser'
 
 export interface IAppCmdResult<T> {
 	value?: T;
+	stdout: string;
+	stderr: string;
 	exitCode: number;
 }
 
@@ -56,7 +58,9 @@ export class AppCmd {
 		}
 
 		let result: IAppCmdResult<T> = {
-			exitCode: execResult.childProcess.exitCode
+			exitCode: execResult.childProcess.exitCode,
+			stdout: execResult.stdout,
+			stderr: execResult.stderr
 		};
 
 		if (translate) {

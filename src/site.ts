@@ -27,6 +27,34 @@ export class Site {
 		return results.value;
 	}
 
+	public async start(name: string): Promise<void> {
+		let command = new AppCmd();
+
+		let results = await command
+			.arg('start')
+			.arg('site')
+			.arg(name)
+			.exec();
+
+		console.log(results.stdout);
+	}
+
+	public async stop(name: string): Promise<void> {
+		let command = new AppCmd();
+
+		try {
+			let results = await command
+				.arg('stop')
+				.arg('site')
+				.arg(name)
+				.exec();
+
+			console.log(results.stdout);
+		} catch (err) {
+			console.log(err.stdout);
+		}
+	}
+
 	private mapSiteResults(value: any): ListSiteResult[] {
 		return value.appcmd.SITE.map(x => {
 			return {
@@ -38,3 +66,5 @@ export class Site {
 		});
 	}
 }
+
+export var site = new Site();
