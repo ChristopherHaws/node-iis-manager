@@ -23,11 +23,7 @@ export class AppCmd {
 		}
 	}
 
-	public arg(name: string, value?: string, skipIfNull?: boolean): AppCmd {
-		if (!value && skipIfNull) {
-			return this;
-		}
-
+	public arg(name: string, value?: string): AppCmd {
 		if (name && name.indexOf(' ') !== -1) {
 			name = `\"${name}\"`;
 		}
