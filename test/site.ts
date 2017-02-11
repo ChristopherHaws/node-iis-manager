@@ -1,9 +1,22 @@
 require('mocha');
 require('chai').should();
 import * as uuid from 'uuid';
-import { sites, SiteOptions } from '../';
+import {Mock, It, Times} from 'moq.ts';
+import { sites, SiteManager, SiteOptions, CommandExecutor, CommandResponse } from '../';
 
 describe('site', () => {
+	// it('foo', async () => {
+	// 	let mockCommandExecutor = new Mock<CommandExecutor>()
+	// 		.setup(x => x.execute(''))
+	// 		.returns({
+	// 			exitCode: 0,
+	// 			stdout: '',
+	// 			stderr: ''
+	// 		} as CommandResponse);
+
+	// 	let foo = new SiteManager();
+	// });
+
 	it('can be retrieved after being created', async () => {
 		let siteName = uuid();
 

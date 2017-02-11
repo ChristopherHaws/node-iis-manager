@@ -1,6 +1,5 @@
 import * as os from 'os';
-import { exec } from 'child-process-promise';
-import { XmlParser } from './util/xml-parser';
+import { CommandExecutor, XmlParser, NodeCommandExecutor } from './util';
 
 export interface IAppCmdResult<T> {
 	value?: T;
@@ -10,10 +9,13 @@ export interface IAppCmdResult<T> {
 }
 
 export class AppCmd {
-	private path: string;
+	private readonly commandExecutor: CommandExecutor;
+	private readonly path: string;
 	private args: string[] = [];
 
-	constructor(path?: string) {
+	constructor(commandExecutor?: CommandExecutor, path?: string) {
+		this.commandExecutor = commandExecutor || new NodeCommandExecutor();
+
 		if (path) {
 			this.path = path;
 		} else if (os.arch() === "x64") {
@@ -41,7 +43,7 @@ export class AppCmd {
 		return this;
 	}
 
-	public argIf(condition: boolean, name: string, value: string): AppCmd {
+	public argIf(condition: boolean, name: string, value?: string): AppCmd {
 		if (!condition) {
 			return this;
 		}
@@ -49,27 +51,27 @@ export class AppCmd {
 		return this.arg(name, value);
 	}
 
-	public async exec<T>(translate?: (value: Object) => T, verbose?: boolean): Promise<IAppCmdResult<T>> {
-		if (translate && this.args.indexOf('/xml') == -1) {
+	public async exec<T>(map?: (value: Object) => T, verbose?: boolean): Promise<IAppCmdResult<T>> {
+		if (map && this.args.indexOf('/xml') == -1) {
 			this.arg('/xml');
 		}
 
-		let execResult = await exec(this.path + ' ' + this.args.join(' '));
+		let response = await this.commandExecutor.execute((this.path + ' ' + this.args.join(' ')).trim());
 
 		if (verbose) {
-			console.log(execResult.stdout);
-			console.log(execResult.stderr);
+			console.log(response.stdout);
+			console.log(response.stderr);
 		}
 
 		let result: IAppCmdResult<T> = {
-			exitCode: execResult.childProcess.exitCode,
-			stdout: execResult.stdout,
-			stderr: execResult.stderr
+			exitCode: response.exitCode,
+			stdout: response.stdout,
+			stderr: response.stderr
 		};
 
-		if (translate) {
-			let parsedResult = await XmlParser.parse<any>(execResult.stdout);
-			result.value = translate(parsedResult);
+		if (map) {
+			let parsedResult = await XmlParser.parse<any>(response.stdout);
+			result.value = map(parsedResult);
 		}
 
 		return result;
