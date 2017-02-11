@@ -76,7 +76,18 @@ describe('AppCmd', () => {
 	it('argIf does not add argument with value if condition is false', async () => {
 		let appCmd = new AppCmd(mockCommandExecutor.object, 'appcmd')
 			.arg('list')
-			.argIf(false, '/site.name', 'Default Web Site')
+			.argIf(false, '/site.name', () => 'Default Web Site')
+
+		let response = await appCmd.exec();
+
+		mockCommandExecutor.verify(x => x.execute('appcmd list'), Times.Once());
+	});
+
+	it('argIf does not add argument with value if condition is false and value reference is undefined', async () => {
+		let value = undefined;
+		let appCmd = new AppCmd(mockCommandExecutor.object, 'appcmd')
+			.arg('list')
+			.argIf(!!value && !!value.name, '/site.name', () => value.name)
 
 		let response = await appCmd.exec();
 
@@ -96,7 +107,7 @@ describe('AppCmd', () => {
 	it('argIf adds argument if condition is true', async () => {
 		let appCmd = new AppCmd(mockCommandExecutor.object, 'appcmd')
 			.arg('list')
-			.argIf(true, '/site.name', 'Default Web Site')
+			.argIf(true, '/site.name', () => 'Default Web Site')
 
 		let response = await appCmd.exec();
 

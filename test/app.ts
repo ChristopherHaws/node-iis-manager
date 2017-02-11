@@ -1,40 +1,45 @@
 require('mocha');
 require('chai').should();
 import * as uuid from 'uuid';
-import { sites, apps, AppOptions, SiteOptions } from '../';
+import { IMock, Mock, It, Times } from 'moq.ts';
+import { sites, apps, AppManager, AppOptions, SiteOptions, CommandExecutor, CommandResponse } from '../';
 
 describe('app', () => {
-	it('can be retrieved after being created', async () => {
-		let siteName = uuid();
-		let appName = uuid();
+	describe('list', () => {
+		const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<appcmd>
+	<APP path="/" APP.NAME="Default Web Site/" APPPOOL.NAME="DefaultAppPool" SITE.NAME="Default Web Site" />
+	<APP path="/" APP.NAME="TestSite/" APPPOOL.NAME="DefaultAppPool" SITE.NAME="TestSite" />
+</appcmd>`;
 
-		try {
-			await sites.add({
-				name: siteName,
-				protocol: 'http',
-				host: siteName,
-				port: 80,
-				path: 'C:\\inetpub\\wwwroot'
-			} as SiteOptions);
+		let mockCommandExecutor: IMock<CommandExecutor>;
 
-			await apps.add({
-				siteName: siteName,
-				virtualPath: `/${appName}`,
-				physicalPath: 'C:\\inetpub\\wwwroot\\AppPath'
-			} as AppOptions);
+		beforeEach(() => {
+			mockCommandExecutor = new Mock<CommandExecutor>()
+				.setup(x => x.execute(It.Is<string>(x => true)))
+				.returns({
+					exitCode: 0,
+					stdout: xml,
+					stderr: ''
+				} as CommandResponse);
+		});
 
-			let app = await apps.get(siteName, appName);
+		it('default', async () => {
+			let appManager = new AppManager(mockCommandExecutor.object, 'appcmd');
 
-			app.path.should.equal(`/${appName}`);
-			app.name.should.equal(`${siteName}/${appName}`);
-		} finally {
-			if (await apps.exists(siteName, appName)) {
-				await apps.remove(siteName, appName);
-			}
+			let apps = await appManager.list();
 
-			if (await sites.exists(siteName)) {
-				await sites.remove(siteName);
-			}
-		}
+			mockCommandExecutor.verify(x => x.execute('appcmd list app /xml'), Times.Once());
+		});
+
+		it('/site.name:"Default Web Site" /xml', async () => {
+			let appManager = new AppManager(mockCommandExecutor.object, 'appcmd');
+
+			let apps = await appManager.list({
+				siteName: 'Default Web Site'
+			});
+
+			mockCommandExecutor.verify(x => x.execute('appcmd list app /site.name:"Default Web Site" /xml'), Times.Once());
+		});
 	});
 });

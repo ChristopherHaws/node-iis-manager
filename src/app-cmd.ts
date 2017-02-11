@@ -43,10 +43,12 @@ export class AppCmd {
 		return this;
 	}
 
-	public argIf(condition: boolean, name: string, value?: string): AppCmd {
+	public argIf(condition: boolean, name: string, valueFunc?: () => string): AppCmd {
 		if (!condition) {
 			return this;
 		}
+
+		let value = valueFunc && valueFunc();
 
 		return this.arg(name, value);
 	}

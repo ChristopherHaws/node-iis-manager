@@ -1,4 +1,5 @@
 import { AppCmd } from './app-cmd';
+import { CommandExecutor } from './util';
 
 export interface App {
 	path: string;
@@ -37,8 +38,16 @@ export interface AppOptions {
 }
 
 export class AppManager {
+	private readonly commandExecutor?: CommandExecutor;
+	private readonly appCmdPath?: string;
+
+	constructor(commandExecutor?: CommandExecutor, appCmdPath?: string) {
+		this.commandExecutor = commandExecutor
+		this.appCmdPath = appCmdPath;
+	}
+
 	public async add(options: AppOptions): Promise<void> {
-		let command = new AppCmd();
+		let command = new AppCmd(this.commandExecutor, this.appCmdPath);
 
 		let results = await command
 			.arg('add')
@@ -50,7 +59,7 @@ export class AppManager {
 	}
 
 	public async remove(siteName: string, virtualPath: string): Promise<void> {
-		let command = new AppCmd();
+		let command = new AppCmd(this.commandExecutor, this.appCmdPath);
 
 		await command
 			.arg('delete')
@@ -73,21 +82,21 @@ export class AppManager {
 	}
 
 	public async list(filters?: AppFilter): Promise<App[]> {
-		let command = new AppCmd();
+		let command = new AppCmd(this.commandExecutor, this.appCmdPath);
 
 		let results = await command
 			.arg('list')
 			.arg('app')
-			.argIf(!!filters && !!filters.siteName, '/site.name', filters.siteName)
-			.argIf(!!filters && !!filters.path, '/path', filters.path)
-			.argIf(!!filters && !!filters.appPoolName, '/apppool.name', filters.appPoolName)
+			.argIf(!!filters && !!filters.siteName, '/site.name', () => filters.siteName)
+			.argIf(!!filters && !!filters.path, '/path', () => filters.path)
+			.argIf(!!filters && !!filters.appPoolName, '/apppool.name', () => filters.appPoolName)
 			.exec(this.map);
 
 		return results.value;
 	}
 
 	public async start(name: string): Promise<void> {
-		let command = new AppCmd();
+		let command = new AppCmd(this.commandExecutor, this.appCmdPath);
 
 		let results = await command
 			.arg('start')
@@ -99,7 +108,7 @@ export class AppManager {
 	}
 
 	public async stop(name: string): Promise<void> {
-		let command = new AppCmd();
+		let command = new AppCmd(this.commandExecutor, this.appCmdPath);
 
 		try {
 			let results = await command
@@ -115,7 +124,7 @@ export class AppManager {
 	}
 
 	public async setAppPool(appName: string, appPoolName: string): Promise<void> {
-		let command = new AppCmd();
+		let command = new AppCmd(this.commandExecutor, this.appCmdPath);
 
 		let results = await command
 			.arg('set')
@@ -126,7 +135,7 @@ export class AppManager {
 	}
 
 	public async setWindowsAuthentication(appPath: string, enable: boolean): Promise<void> {
-		let command = new AppCmd();
+		let command = new AppCmd(this.commandExecutor, this.appCmdPath);
 
 		let results = await command
 			.arg('set')
@@ -138,7 +147,7 @@ export class AppManager {
 	}
 
 	public async setAnonymousAuthentication(appPath: string, enable: boolean): Promise<void> {
-		let command = new AppCmd();
+		let command = new AppCmd(this.commandExecutor, this.appCmdPath);
 
 		let results = await command
 			.arg('set')
