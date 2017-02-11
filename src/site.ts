@@ -1,4 +1,5 @@
 import { AppCmd } from './app-cmd';
+import { CommandExecutor } from './util';
 
 export interface Site {
 	id: string;
@@ -17,8 +18,16 @@ export interface SiteOptions {
 }
 
 export class SiteManager {
+	private readonly commandExecutor?: CommandExecutor;
+	private readonly appCmdPath?: string;
+
+	constructor(commandExecutor?: CommandExecutor, appCmdPath?: string) {
+		this.commandExecutor = commandExecutor
+		this.appCmdPath = appCmdPath;
+	}
+
 	public async add(options: SiteOptions): Promise<void> {
-		let command = new AppCmd();
+		let command = new AppCmd(this.commandExecutor, this.appCmdPath);
 
 		await command
 			.arg('add')
@@ -30,7 +39,7 @@ export class SiteManager {
 	}
 
 	public async remove(name: string): Promise<void> {
-		let command = new AppCmd();
+		let command = new AppCmd(this.commandExecutor, this.appCmdPath);
 
 		await command
 			.arg('delete')
@@ -54,7 +63,7 @@ export class SiteManager {
 	}
 
 	public async list(): Promise<Site[]> {
-		let command = new AppCmd();
+		let command = new AppCmd(this.commandExecutor, this.appCmdPath);
 
 		let results = await command
 			.arg('list')
@@ -65,7 +74,7 @@ export class SiteManager {
 	}
 
 	public async start(name: string): Promise<void> {
-		let command = new AppCmd();
+		let command = new AppCmd(this.commandExecutor, this.appCmdPath);
 
 		let results = await command
 			.arg('start')
@@ -77,7 +86,7 @@ export class SiteManager {
 	}
 
 	public async stop(name: string): Promise<void> {
-		let command = new AppCmd();
+		let command = new AppCmd(this.commandExecutor, this.appCmdPath);
 
 		try {
 			let results = await command

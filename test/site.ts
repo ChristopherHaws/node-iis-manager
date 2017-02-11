@@ -1,42 +1,59 @@
 require('mocha');
 require('chai').should();
 import * as uuid from 'uuid';
-import {Mock, It, Times} from 'moq.ts';
-import { sites, SiteManager, SiteOptions, CommandExecutor, CommandResponse } from '../';
+import { IMock, Mock, It, Times } from 'moq.ts';
+import { SiteManager, Site, SiteOptions, CommandExecutor, CommandResponse } from '../';
 
 describe('site', () => {
-	// it('foo', async () => {
-	// 	let mockCommandExecutor = new Mock<CommandExecutor>()
-	// 		.setup(x => x.execute(''))
-	// 		.returns({
-	// 			exitCode: 0,
-	// 			stdout: '',
-	// 			stderr: ''
-	// 		} as CommandResponse);
+	describe('list', () => {
+		const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<appcmd>
+	<SITE SITE.NAME="Default Web Site" SITE.ID="1" bindings="http/*:80:" state="Started" />
+	<SITE SITE.NAME="Test Site" SITE.ID="2" bindings="https/*:443:" state="Stopped" />
+</appcmd>`;
 
-	// 	let foo = new SiteManager();
-	// });
+		let mockCommandExecutor: IMock<CommandExecutor>;
 
-	it('can be retrieved after being created', async () => {
-		let siteName = uuid();
+		beforeEach(() => {
+			mockCommandExecutor = new Mock<CommandExecutor>()
+				.setup(x => x.execute(It.Is<string>(x => true)))
+				.returns({
+					exitCode: 0,
+					stdout: xml,
+					stderr: ''
+				} as CommandResponse);
+		});
 
-		try {
-			await sites.add({
-				name: siteName,
-				protocol: 'http',
-				host: siteName,
-				port: 80,
-				path: 'C:\\inetpub\\wwwroot'
-			} as SiteOptions);
+		it('returns multiple items when no filter is passed', async () => {
+			let siteManager = new SiteManager(mockCommandExecutor.object, 'appcmd');
 
-			let site = await sites.get(siteName);
+			let sites = await siteManager.list();
 
-			site.name.should.equal(siteName);
-			site.bindings.should.equal(`http/*:80:${siteName}`);
-		} finally {
-			if (await sites.exists(siteName)) {
-				await sites.remove(siteName);
-			}
-		}
+			sites.should.be.length(2);
+
+			sites.should.contain({
+				id: '1',
+				name: 'Default Web Site',
+				bindings: 'http/*:80:',
+				state: 'Started'
+			} as Site);
+
+			sites.should.contain({
+				id: '2',
+				name: 'Test Site',
+				bindings: 'https/*:443:',
+				state: 'Stopped'
+			} as Site);
+
+			mockCommandExecutor.verify(x => x.execute('appcmd list site /xml'), Times.Once());
+		});
+
+		it('calls command once', async () => {
+			let siteManager = new SiteManager(mockCommandExecutor.object, 'appcmd');
+
+			let sites = await siteManager.list();
+
+			mockCommandExecutor.verify(x => x.execute('appcmd list site /xml'), Times.Once());
+		});
 	});
 });
