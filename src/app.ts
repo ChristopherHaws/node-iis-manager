@@ -13,7 +13,7 @@ export interface AppOptions {
 	physicalPath: string;
 }
 
-export class App {
+export class AppManager {
 	public async add(options: AppOptions): Promise<void> {
 		let command = new AppCmd();
 
@@ -118,4 +118,4 @@ export class App {
 	}
 }
 
-export var app = new App();
+export var apps = new AppManager();

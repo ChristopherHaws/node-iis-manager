@@ -1,22 +1,50 @@
 import { AppCmd } from './app-cmd'
 
-export interface ListSiteResult {
+export interface Site {
 	id: string;
 	name: string;
 	bindings: string;
 	state: string;
 }
 
-export class Site {
+export interface SiteOptions {
+	name: string;
+	protocol: string;
+	host: string;
+	port: number;
+	bindings?: string;
+	path?: string;
+}
+
+export class SiteManager {
+	public async add(options: SiteOptions): Promise<void> {
+		let command = new AppCmd();
+
+		await command
+			.arg("add site")
+			.arg("/name:" + options.name)
+			.arg("/bindings", (options.bindings || `${options.protocol}://${options.host}:${options.port}`))
+			.argIf(!!options.path, '/physicalPath', options.path)
+			.exec();
+	}
+
+	public async remove(name: string): Promise<void> {
+		let command = new AppCmd();
+
+		await command
+			.arg("delete")
+			.arg("site")
+			.arg("/site.name", name)
+			.exec();
+	}
+
 	public async exists(name: string): Promise<boolean> {
 		let sites = await this.list();
 
-		return sites.some(value => {
-			return value.name === name;
-		});
+		return sites.some(x => x.name === name);
 	}
 
-	public async list(): Promise<ListSiteResult[]> {
+	public async list(): Promise<Site[]> {
 		let command = new AppCmd();
 
 		let results = await command
@@ -55,16 +83,16 @@ export class Site {
 		}
 	}
 
-	private mapSiteResults(value: any): ListSiteResult[] {
+	private mapSiteResults(value: any): Site[] {
 		return value.appcmd.SITE.map(x => {
 			return {
 				id: x.$['SITE.ID'],
 				name: x.$['SITE.NAME'],
 				bindings: x.$['bindings'],
 				state: x.$['state']
-			} as ListSiteResult;
+			} as Site;
 		});
 	}
 }
 
-export var site = new Site();
+export var sites = new SiteManager();

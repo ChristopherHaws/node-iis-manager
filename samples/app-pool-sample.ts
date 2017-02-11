@@ -1,8 +1,8 @@
-import { appPool } from '../'
+import { appPools } from '../'
 
 class Program {
 	public static async Main() {
-		await appPool.stop('DefaultAppPool');
+		await appPools.stop('DefaultAppPool');
 	}
 }
 

@@ -45,6 +45,14 @@ export class AppCmd {
 		return this;
 	}
 
+	public argIf(condition: boolean, name: string, value: string): AppCmd {
+		if (!condition) {
+			return this;
+		}
+
+		return this.arg(name, value);
+	}
+
 	public async exec<T>(translate?: (value: Object) => T, verbose?: boolean): Promise<IAppCmdResult<T>> {
 		if (translate && this.args.indexOf('/xml') == -1) {
 			this.arg('/xml');

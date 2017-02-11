@@ -1,8 +1,8 @@
-import { app } from '../'
+import { apps } from '../'
 
 class Program {
 	public static async Main() {
-		let results = await app.list();
+		let results = await apps.list();
 		console.log(results);
 	}
 }
