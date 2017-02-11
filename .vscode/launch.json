@@ -5,19 +5,27 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"name": "Launch Tests",
 			"type": "node",
-			"request": "launch",
-			"name": "Launch Program",
-			"program": "${file}",
-			"outFiles": []
-		},
-		{
-			"type": "node",
-			"request": "attach",
-			"name": "Attach to Process",
-			"address": "localhost",
-			"port": 5858,
-			"outFiles": []
+            "request": "launch",
+			"cwd": "${workspaceRoot}",
+			"program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+			"args": [
+				"--reporter",
+				"spec",
+				"./dist/test/"
+			],
+			"runtimeExecutable": null,
+			"runtimeArgs": [
+				"--nolazy"
+			],
+			"env": {
+				"NODE_ENV": "dev"
+			},
+			"sourceMaps": true,
+			"outFiles": [
+				"${workspaceRoot}/dist/**/*.js"
+			]
 		}
 	]
 }

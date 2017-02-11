@@ -3,6 +3,8 @@
 		"target": "es6",
 		"module": "commonjs",
 		"alwaysStrict": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+		"sourceMap": true,
+		"outDir": "./dist"
 	}
 }
