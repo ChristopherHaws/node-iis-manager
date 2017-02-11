@@ -55,6 +55,17 @@ describe('AppCmd', () => {
 		mockCommandExecutor.verify(x => x.execute('appcmd list app /site.name:"Default Web Site"'), Times.Once());
 	});
 
+
+
+	it('arg adds quotations to multi-word value argument', async () => {
+		let appCmd = new AppCmd(mockCommandExecutor.object, 'appcmd')
+			.arg('/site.name', 'Default Web Site');
+
+		let response = await appCmd.exec();
+
+		mockCommandExecutor.verify(x => x.execute('appcmd /site.name:"Default Web Site"'), Times.Once());
+	});
+
 	it('argIf does not add argument if condition is false', async () => {
 		let appCmd = new AppCmd(mockCommandExecutor.object, 'appcmd')
 			.arg('list')
